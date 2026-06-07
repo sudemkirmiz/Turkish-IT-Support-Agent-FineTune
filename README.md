@@ -318,18 +318,6 @@ Turkish-IT-Support-Agent-FineTune/
 - Local model olduğu için cevap süresi değişebilir ve yavaş olabilir.
 - Model bazen bozuk Türkçe veya yetersiz cevap üretebilir.
 - Backend model cevabını hazır cevapla düzeltmez.
-- Daha iyi sonuç için dataset iyileştirilip model yeniden fine-tune edilmelidir.
-
-## GitHub'a Eklenmemesi Gerekenler
-
-- `.env`
-- `sessions.json`
-- `__pycache__`
-- `.pytest_cache`
-- `node_modules`
-- model cache
-- `*.safetensors`
-- `*.bin`
 
 ## Kaynaklar
 
