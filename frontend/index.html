@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IT Destek Asistanı</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <span class="logo-icon">🛠️</span>
+            <span class="logo-text">IT Asistan</span>
+          </div>
+          <button type="button" id="newChatButton" class="sidebar-new-chat">Yeni Sohbet</button>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-page="assistantPage">
+            <span class="nav-icon">💬</span>
+            <span class="nav-text">Destek Asistanı</span>
+          </button>
+          <button class="nav-item" data-page="evaluationPage">
+            <span class="nav-icon">📊</span>
+            <span class="nav-text">Model Değerlendirme</span>
+          </button>
+          <button class="nav-item" data-page="statusPage">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-text">Sistem Durumu</span>
+          </button>
+        </nav>
+
+        <section class="sidebar-sessions" aria-label="Sohbet geçmişi">
+          <div class="sidebar-section-header">
+            <div class="sidebar-section-title">Sohbetler</div>
+            <button type="button" id="clearAllChatsButton" class="sidebar-clear-all">Tümünü Temizle</button>
+          </div>
+          <div id="sessionList" class="session-list"></div>
+        </section>
+
+        <div class="sidebar-footer">
+          <div class="status-indicator" id="sidebarStatus">
+            <span class="status-dot"></span>
+            <span class="status-text">Kontrol ediliyor...</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="main-content">
+      <!-- ASSISTANT PAGE -->
+        <section id="assistantPage" class="page active chat-page">
+          <div class="chat-shell">
+            <header class="chat-header">
+              <div>
+                <h1>IT Destek Asistanı</h1>
+                <p>Teknik probleminizi yazın, adım adım destek alın.</p>
+              </div>
+            </header>
+
+            <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+
+            <div id="chatEmptyState" class="chat-empty-state">
+              <h2>Bir teknik problemi yazarak başlayın.</h2>
+              <p>Asistan önce probleminizi analiz eder, ardından kategori, risk ve çözüm adımlarını üretir.</p>
+              <div id="examples" class="chat-examples"></div>
+            </div>
+
+            <form id="analyzeForm" class="chat-composer">
+              <div class="composer-input-bar">
+                <label class="sr-only" for="message">Mesajınız</label>
+                <textarea
+                  id="message"
+                  rows="1"
+                  placeholder="Teknik probleminizi yazın…"
+                  required
+                ></textarea>
+                <div class="chat-composer-actions">
+                  <button type="button" id="voiceButton" class="voice-button" aria-label="Sesli yazdır">🎙</button>
+                  <label class="sr-only" for="os">İşletim Sistemi</label>
+                  <select id="os">
+                    <option value="Windows">Windows</option>
+                    <option value="macOS">macOS</option>
+                    <option value="Linux">Linux</option>
+                    <option value="Unknown">Bilmiyorum</option>
+                  </select>
+                  <button type="submit" id="submitButton" class="btn btn-primary">Gönder</button>
+                </div>
+              </div>
+              <div class="composer-hint">Enter ile gönder, Shift+Enter ile yeni satır ekle.</div>
+            </form>
+          </div>
+        </section>
+
+        <!-- EVALUATION PAGE -->
+        <section id="evaluationPage" class="page">
+          <header class="page-header">
+            <h1>📊 Model Değerlendirme</h1>
+            <p class="page-subtitle">Sistemin ne kadar doğru çıktı ürettiğini test edin</p>
+          </header>
+
+          <div class="page-content">
+            <!-- Kontrol Butonları -->
+            <div class="control-panel">
+              <button id="runQuickTestsButton" class="btn btn-primary">
+                ⚡ Hızlı Demo Testi (3)
+              </button>
+              <button id="runAllTestsButton" class="btn btn-primary">
+                🚀 Tüm Testleri Çalıştır
+              </button>
+              <button id="clearTestsButton" class="btn btn-secondary">
+                🗑️ Sonuçları Temizle
+              </button>
+              <button id="downloadReportButton" class="btn btn-success" onclick="downloadTestResults()">
+                📥 Raporu İndir (JSON)
+              </button>
+            </div>
+
+            <!-- Metrikler -->
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <span class="metric-label">Toplam Test</span>
+                <strong class="metric-value" id="totalTestsMetric">0</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Başarılı</span>
+                <strong class="metric-value success" id="passedTestsMetric">0</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Kısmi Başarılı</span>
+                <strong class="metric-value warning" id="partialTestsMetric">0</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Başarısız</span>
+                <strong class="metric-value danger" id="failedTestsMetric">0</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Kategori Doğruluğu</span>
+                <strong class="metric-value" id="categoryAccuracyMetric">0%</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Öncelik Doğruluğu</span>
+                <strong class="metric-value" id="priorityAccuracyMetric">0%</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Risk Doğruluğu</span>
+                <strong class="metric-value" id="riskAccuracyMetric">0%</strong>
+              </div>
+            </div>
+
+            <!-- Test Durumu -->
+            <div class="test-status-box" id="testStatus">Henüz test çalıştırılmadı.</div>
+
+            <!-- Test Senaryoları -->
+            <div class="evaluation-grid">
+              <div class="panel">
+                <h3>Test Senaryoları</h3>
+                <div id="testCases" class="test-cases-list"></div>
+              </div>
+
+              <div class="panel">
+                <h3>Sonuç Tablosu</h3>
+                <div class="table-wrapper">
+                  <table class="results-table">
+                    <thead>
+                      <tr>
+                        <th>Mesaj</th>
+                        <th>Beklenen</th>
+                        <th>Model</th>
+                        <th>Sonuç</th>
+                      </tr>
+                    </thead>
+                    <tbody id="testResultsBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STATUS PAGE -->
+        <section id="statusPage" class="page">
+          <header class="page-header">
+            <h1>⚙️ Sistem Durumu</h1>
+            <p class="page-subtitle">Backend ve model bilgileri</p>
+          </header>
+
+          <div class="page-content">
+            <div class="panel status-panel">
+              <div class="status-section">
+                <h2>Backend Durumu</h2>
+                <div class="status-info">
+                  <div class="info-row">
+                    <span class="info-label">Durum</span>
+                    <span class="info-value">
+                      <span id="backendStatusDot" class="status-indicator-small"></span>
+                      <span id="backendStatusText">Kontrol ediliyor...</span>
+                    </span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">API Adresi</span>
+                    <span class="info-value" id="apiUrl">-</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="status-section">
+                <h2>Model Bilgileri</h2>
+                <div class="status-info">
+                  <div class="info-row">
+                    <span class="info-label">Model Adı</span>
+                    <span class="info-value code" id="modelName">-</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Türü</span>
+                    <span class="info-value">LoRA Fine-Tuned</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Base Model</span>
+                    <span class="info-value">Qwen 2.5 (3B)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="status-section">
+                <h2>Güvenlik</h2>
+                <div class="status-info">
+                  <div class="info-row">
+                    <span class="info-label">JSON Doğrulama</span>
+                    <span class="info-value">
+                      <span class="badge badge-success">✓ Aktif</span>
+                    </span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Parantez Eşleştirme</span>
+                    <span class="info-value">
+                      <span class="badge badge-success">✓ Aktif</span>
+                    </span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Şema Doğrulama</span>
+                    <span class="info-value">
+                      <span class="badge badge-success">✓ Aktif</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="status-section">
+                <h2>API Endpointleri</h2>
+                <div class="status-info">
+                  <div class="endpoint">
+                    <span class="endpoint-method">GET</span>
+                    <code class="endpoint-path">/health</code>
+                    <span class="endpoint-desc">Backend durumu kontrol</span>
+                  </div>
+                  <div class="endpoint">
+                    <span class="endpoint-method">POST</span>
+                    <code class="endpoint-path">/analyze</code>
+                    <span class="endpoint-desc">Problem analizi ve JSON çıktısı</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <div id="toast" class="toast" hidden></div>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

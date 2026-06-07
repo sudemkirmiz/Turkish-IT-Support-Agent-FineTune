@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+python-dotenv
+pytest
+httpx
+torch
+transformers
+accelerate
+peft
+bitsandbytes>=0.46.1
