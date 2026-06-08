@@ -226,21 +226,6 @@ Dosyalar chat fine-tuning formatındadır:
 {"messages":[{"role":"system","content":"..."},{"role":"user","content":"..."},{"role":"assistant","content":"{...}"}]}
 ```
 
-## Veri Üretimi
-
-Fine-tune veri hazırlama sürecinde kullanılan komutlar:
-
-```powershell
-python scripts/split_merged_output.py
-```
-
-Eski CSV kaynaklarını birleştirme ve train/test ayrımı için kullanılan komutlar:
-
-```powershell
-python scripts/combine_finetune_csv.py
-python scripts/split_finetune_dataset.py
-```
-
 ## Model Eğitimi
 
 Fine-tune notebookları eğitim çalışma alanında `notebooks/` klasörü altında tutulmuştur.
