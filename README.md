@@ -220,13 +220,6 @@ dataset/train.jsonl
 dataset/test.jsonl
 ```
 
-Son eğitim çalışma alanında kullanılan dosya yapısı:
-
-```text
-data/final/train.jsonl
-data/final/test.jsonl
-```
-
 Dosyalar chat fine-tuning formatındadır:
 
 ```json
@@ -247,8 +240,6 @@ Eski CSV kaynaklarını birleştirme ve train/test ayrımı için kullanılan ko
 python scripts/combine_finetune_csv.py
 python scripts/split_finetune_dataset.py
 ```
-
-Not: Bu yardımcı scriptler mevcut repo içinde bulunmuyorsa, fine-tune çalışma alanında veya veri hazırlama paketinde tutulmuş olabilir.
 
 ## Model Eğitimi
 
